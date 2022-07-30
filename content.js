@@ -21,10 +21,11 @@ function wordFinder() {
         }
         start = s.anchorOffset;
         end = start + t.length;
-        html = `<div><span>${t}</span></div>`;
+        let newSpan = document.createElement('span');
+        newSpan.appendChild(document.createTextNode('test'));
         if (s.rangeCount) {
             range.deleteContents();
-            range.insertNode(document.createTextNode('test'));
+            range.insertNode(newSpan);
         }
     } else if ((sel = document.selection) && sel.type != "Control") {
         // IE 4+
