@@ -24,6 +24,8 @@ import 'tippy.js/dist/tippy.css';
 //     });
 // }
 
+const authKey = '5031f0dc-e832-6b09-1dc2-b0e10aa41692:fx';
+
 function wordFinder() {
     console.log('word finder triggered');
     // Gets clicked on word (or selected text if text is selected)
@@ -55,9 +57,18 @@ function wordFinder() {
             range.deleteContents();
             range.insertNode(newSpan);
         }
-        tippy(`#${t}-node`, {
-            content: t
-        });
+
+        fetch(`https://api-free.deepl.com/v2/translate?auth_key=${authKey}&text=${t}&target_lang=EN-US`, {
+            method: 'POST'
+        })
+        .then((response) => response.json())
+        .then((data) => {
+            tippy(`#${t}-node`, {
+                content: data.translations[0].text
+            });
+        })
+        
+        
     } 
 
     // need to look into what this case is doing/when it gets triggered

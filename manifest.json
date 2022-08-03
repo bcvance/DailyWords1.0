@@ -9,7 +9,6 @@
     "permissions": ["storage"],
     "content_scripts": [
         {
-            "css": ["src/styles.css"],
             "matches": ["<all_urls>"],
             "js": ["jquery.js", "dist/main.js"]
         }
