@@ -105,6 +105,7 @@ function wordFinder(event) {
                     el.style.backgroundColor = '#00ffd9';
                     document.getElementById('save-btn').onclick = () => {
                         // here we will save word - translation pair to storage
+                        console.log(t);
                     }
                 })
             }   
