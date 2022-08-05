@@ -1,4 +1,4 @@
-import tippy from 'tippy.js';
+import tippy, { hideAll } from 'tippy.js';
 import 'tippy.js/dist/tippy.css';
 // import './styles.css';
 
@@ -90,13 +90,13 @@ function wordFinder(event) {
                         // and does not try to evaluate next thing clicked
                         onShow(instance) {
                             console.log('onSHow');
-                            toolTipActive = true;
                             $("body").off('click');
                         },
                         // when tippy is minimized, we reactivate wordFinder event listener so that
                         // we can continue to translate new terms
                         onHidden(instance) {
-                            toolTipActive = false;
+                            console.log("onHidden");
+                            hideAll();
                             $("body").on('click', (event) => {
                                 wordFinder(event);
                             });
@@ -134,9 +134,9 @@ function wordFinder(event) {
             // follow the rest of the css to make the tooltip functional
         } 
     }
-    // else {
-    //     console.log('has click attribute');
-    // } 
+    else {
+        console.log('has click attribute');
+    } 
 }
 
 
