@@ -108,11 +108,24 @@ function wordFinder(event) {
                             // here we will save word - translation pair to storage
                             console.log(t);
                             if (event.target.innerHTML === 'Save This Word') {
+                                chrome.storage.sync.get('words', function(result) {
+                                    result.words[t] = data.translations[0].text;
+                                    chrome.storage.sync.set({'words': result.words}, () => {
+                                        console.log('word saved');
+                                    });
+                                });
                                 event.target.innerHTML = 'Unsave Word';
                             }
                             else {
+                                chrome.storage.sync.get('words', function(result) {
+                                    delete result.words[t];
+                                    chrome.storage.sync.set({'words': result.words}, () => {
+                                        console.log(`${t} key deleted`);
+                                    });
+                                })
                                 event.target.innerHTML = 'Save This Word';
                             }
+                            
                         }
                     })
                 }   
@@ -173,16 +186,20 @@ chrome.runtime.onMessage.addListener(
     }
   );
 
-
+chrome.storage.onChanged.addListener(function() {
+    chrome.storage.sync.get('words', function(result) {
+        console.log(result.words);
+    })
+})
 
 
 
 // testing
 
-// chrome.storage.sync.get('words', function(result) {
-//     console.log(result.words);
-// });
+chrome.storage.sync.get('words', function(result) {
+    console.log(result.words);
+});
 
-// chrome.storage.sync.get('activated', function(result) {
-//     console.log(result.activated);
-// });
+chrome.storage.sync.get('activated', function(result) {
+    console.log(result.activated);
+});

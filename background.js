@@ -1,4 +1,4 @@
-let words_default = new Set()
+let words_default = {};
 let activated_default = false;
 
 console.log('test1');
