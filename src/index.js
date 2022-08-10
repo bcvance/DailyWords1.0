@@ -108,14 +108,25 @@ function wordFinder(event) {
                             // here we will save word - translation pair to storage
                             console.log(t);
                             if (event.target.innerHTML === 'Save This Word') {
-                                chrome.storage.sync.get('words', function(result) {
-                                    result.words[t] = data.translations[0].text;
-                                    chrome.storage.sync.set({'words': result.words}, () => {
-                                        console.log('word saved');
-                                    });
-                                });
+                                chrome.runtime.sendMessage({word: t, translation: data.translations[0].text, type: 'save'}, function(response) {
+                                    console.log(response.farewell);
+                                  });
+                            //     chrome.runtime.sendMessage(
+                            //         {word: t, translation: data.translations[0].text, type: 'save'},
+                            //         function(response) {
+                            //             result = response.farewell;
+                            //             alert(result.summary);
+
+                            //             let notifOptions = {
+                            //                 type: "basic",
+                            //                 title: "saving word",
+                            //                 message: result.summary
+                            //         };
+                            //         chrome.notifications.create('SavingNotif', notifOptions)
+                            // });
                                 event.target.innerHTML = 'Unsave Word';
                             }
+
                             else {
                                 chrome.storage.sync.get('words', function(result) {
                                     delete result.words[t];
