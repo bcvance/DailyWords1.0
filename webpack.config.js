@@ -1,13 +1,15 @@
 const path = require('path');
-const webpack = require('webpack');
 
 module.exports = {
-  entry:
-    './src/index.js',
+  entry: {
+    'content': './src/content_unpacked.js',
+    'background': './src/background_unpacked.js'
+  }
+    ,
     // background_packed: './background.js'
   output: {
-    filename: 'main.js',
     path: path.resolve(__dirname, 'dist'),
+    filename: '[name].js'
   },
   module: {
     rules: [
@@ -32,15 +34,6 @@ module.exports = {
       },
     ]
   },
-  // resolve:{
-  //   fallback: { "crypto": require.resolve("crypto-browserify") },
-  //   fallback: { "stream": require.resolve("stream-browserify") },
-  //   fallback: { "https": require.resolve("https-browserify") },
-  //   fallback: { "os": require.resolve("os-browserify/browser") }
-  // },
-  // plugins: [
-  //   new webpack.ProvidePlugin({process: 'process'})
-  // ]
 };
 
 
