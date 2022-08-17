@@ -1,35 +1,51 @@
 let serverhost = 'http://127.0.0.1:8000';
 let words_default = {};
 let activated_default = false;
-import { Buffer } from 'buffer';
+let clientId = '271850698689-01761jqfpvaaq33640kohv5drfhbnq52.apps.googleusercontent.com';
+let redirectUri = `https://${chrome.runtime.id}.chromiumapp.org/`;
+let nonce = Math.random().toString(36).substring(2, 15);
+// import { Buffer } from 'buffer';
+
+chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
+    if (request.message === 'authorize') {
+        console.log('authorization triggered');
+        const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
+
+        authUrl.searchParams.set('client_id', clientId);
+        authUrl.searchParams.set('response_type', 'id_token');
+        authUrl.searchParams.set('redirect_uri', redirectUri);
+        // Add the OpenID scope. Scopes allow you to access the user’s information.
+        authUrl.searchParams.set('scope', 'openid profile email');
+        authUrl.searchParams.set('nonce', nonce);
+        // Show the consent screen after login.
+        // authUrl.searchParams.set('prompt', 'consent');
+
+        chrome.identity.launchWebAuthFlow(
+            {
+                url: authUrl.href,
+                interactive: true,
+            },
+            (redirectUrl) => {
+                if (redirectUrl) {
+                    // The ID token is in the URL hash
+                    const urlHash = redirectUrl.split('#')[1];
+                    const params = new URLSearchParams(urlHash);
+                    const jwt = params.get('id_token');
+        
+                    // Parse the JSON Web Token
+                    const base64Url = jwt.split('.')[1];
+                    const base64 = base64Url.replace('-', '+').replace('_', '/');
+                    const token = JSON.parse(atob(base64));
+        
+                    console.log('token', token);
+                }
+            },
+        );
+    }
+});
 
 console.log('test1');
 chrome.runtime.onInstalled.addListener(() => {
-    // let url = 'https://api.twilio.com/2010-04-01/Accounts/AC91d35f2c7e8830c6f30c8dcc79b59382/Messages.json';
-    // let headers = new Headers();
-    // headers.set('Authorization', 'Basic ' + Buffer.from('AC91d35f2c7e8830c6f30c8dcc79b59382' + ':' + '36612d5b3a50d11a4277b81e32d4fcc0').toString('base64'));
-    // headers.set('Content-type', 'application/x-www-form-urlencoded;charset=UTF-8');
-    // let details = {
-    //     'Body': 'Thanks for installing Daily Words!',
-    //     'From': '+18106311913',
-    //     'To': '+18157939677'
-    // }
-    // let formBody = []
-    // for (let property in details) {
-    //     let encodedKey = encodeURIComponent(property);
-    //     let encodedValue = encodeURIComponent(details[property]);
-    //     formBody.push(encodedKey + '=' + encodedValue);
-    // }
-    // formBody = formBody.join('&');
-
-    // fetch(url, {
-    //     method: 'POST',
-    //     headers: headers,
-    //     body: formBody
-    // })
-    // .then(response => response.json())
-    // .then(json => console.log(json));
-
     chrome.storage.sync.get({'words': words_default}, function(result) {
         console.log(result.words);
         chrome.storage.sync.set({'words': result.words}, () => {
@@ -73,7 +89,6 @@ chrome.runtime.onMessage.addListener(
             .catch(error => console.log(error))
             return true; 
         }
-        
     }
 )
 
