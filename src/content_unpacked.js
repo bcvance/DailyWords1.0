@@ -122,10 +122,12 @@ function wordFinder(event) {
             s.modify('extend', 'forward', 'word');
             t = s.toString();
             range = s.getRangeAt(0);
+            console.log(range)
             s.modify('move', 'forward', 'character'); //clear selection
         }
         else {
             t = s.toString();
+            range = s.getRangeAt(0);
         }   
     }
     return [t,s,range];

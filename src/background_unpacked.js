@@ -1,6 +1,7 @@
 let serverhost = 'http://127.0.0.1:8000';
 let words_default = {};
 let activated_default = false;
+let userInfo;
 let clientId = '271850698689-01761jqfpvaaq33640kohv5drfhbnq52.apps.googleusercontent.com';
 let redirectUri = `https://${chrome.runtime.id}.chromiumapp.org/`;
 let nonce = Math.random().toString(36).substring(2, 15);
@@ -36,7 +37,8 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
                     const base64Url = jwt.split('.')[1];
                     const base64 = base64Url.replace('-', '+').replace('_', '/');
                     const token = JSON.parse(atob(base64));
-        
+                    userInfo = token;
+
                     console.log('token', token);
                 }
             },
@@ -46,19 +48,17 @@ chrome.runtime.onMessage.addListener(function(request, sender, sendResponse) {
 
 console.log('test1');
 chrome.runtime.onInstalled.addListener(() => {
-    chrome.storage.sync.get({'words': words_default}, function(result) {
-        console.log(result.words);
-        chrome.storage.sync.set({'words': result.words}, () => {
-            console.log('words stored')
-        });
-    });
     let activated = false;
     chrome.storage.sync.get({'activated': activated_default}, function(result) {
             console.log(result.activated);
             chrome.storage.sync.set({'activated': result.activated}, () => {
                 console.log('activated stored')
             })
-    });         
+    });
+    // let url = serverhost + '/api/send'
+    // fetch(url, {
+    //     method: 'POST',
+    // });         
 }); 
 
 
@@ -69,7 +69,7 @@ chrome.runtime.onMessage.addListener(
             let url = serverhost + '/api/save'
             fetch(url, {
                 method: 'POST',
-                body: JSON.stringify({word: request.word, translation: request.translation})
+                body: JSON.stringify({word: request.word, translation: request.translation, userInfo: userInfo})
             })
             .then(response => response.json())
             .then(response => console.log(response))
@@ -82,7 +82,7 @@ chrome.runtime.onMessage.addListener(
             let url = serverhost + '/api/delete'
             fetch(url, {
                 method: 'POST',
-                body: JSON.stringify({word: request.word})
+                body: JSON.stringify({word: request.word, userInfo: userInfo})
             })
             .then(response => response.json())
             .then(response => console.log(response))
