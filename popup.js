@@ -19,7 +19,7 @@ activatedBtn.onclick = () => {
         chrome.tabs.query({active: true, currentWindow: true}, function(tabs) {
             chrome.tabs.sendMessage(tabs[0].id, {status: true});
           });
-        chrome.runtime.sendMessage({message: 'authorize'});  
+        chrome.runtime.sendMessage({type: 'authorize'});  
     }
     else {
         activatedBtn.innerHTML = 'activate';

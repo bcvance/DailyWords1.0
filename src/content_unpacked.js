@@ -137,9 +137,6 @@ function wordFinder(event) {
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-      console.log(sender.tab ?
-                  "from a content script:" + sender.tab.url :
-                  "from the extension");
     // I think this set is redundant since I set "activated" in popup.js
       chrome.storage.sync.set({'activated': request.status});
       chrome.storage.sync.get('activated', function(result){
@@ -158,21 +155,21 @@ chrome.runtime.onMessage.addListener(
     }
   );
 
-chrome.storage.onChanged.addListener(function() {
-    chrome.storage.sync.get('words', function(result) {
-        console.log(result.words);
-    })
-})
+// chrome.storage.onChanged.addListener(function() {
+//     chrome.storage.sync.get('words', function(result) {
+//         console.log(result.words);
+//     })
+// })
 
 
 
-// testing
+// // testing
 
-chrome.storage.sync.get('words', function(result) {
-    console.log(result.words);
-});
+// chrome.storage.sync.get('words', function(result) {
+//     console.log(result.words);
+// });
 
-chrome.storage.sync.get('activated', function(result) {
-    console.log(result.activated);
-});
+// chrome.storage.sync.get('activated', function(result) {
+//     console.log(result.activated);
+// });
 
