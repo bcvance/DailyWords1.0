@@ -48,8 +48,16 @@ document.addEventListener('DOMContentLoaded', restoreOptions);
 
 // save settings
 document.getElementById('save').addEventListener('click', function() {
+    
     // in case user has not been authenticated by activate extension on a page,
     // we will authenticate and fetch their user info now
-    chrome.runtime.sendMessage({type: 'authorize'},
-    saveOptions());  
+    chrome.runtime.sendMessage({type: 'authorize', origin: 'options'});  
 });
+
+chrome.runtime.onMessage.addListener(
+    function(request, sender, sendResponse) {
+        if (request.type === 'auth_completed') {
+            saveOptions();
+        }
+    }
+)

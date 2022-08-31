@@ -20,7 +20,6 @@ let nonce = Math.random().toString(36).substring(2, 15);
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-        // save word to db
         if (request.type === 'authorize') {
             console.log('authorization triggered');
             const authUrl = new URL('https://accounts.google.com/o/oauth2/v2/auth');
@@ -51,7 +50,10 @@ chrome.runtime.onMessage.addListener(
                         const base64 = base64Url.replace('-', '+').replace('_', '/');
                         const token = JSON.parse(atob(base64));
                         userInfo = token;
-
+                        // notify options.js that it can save settings as user has been authenticated
+                        if (request.origin === 'options') {
+                            chrome.runtime.sendMessage({type:'auth_completed'});
+                        }
                         console.log('token', token);
                     }
                 },

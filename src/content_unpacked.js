@@ -137,21 +137,24 @@ function wordFinder(event) {
 
 chrome.runtime.onMessage.addListener(
     function(request, sender, sendResponse) {
-    // I think this set is redundant since I set "activated" in popup.js
-      chrome.storage.sync.set({'activated': request.status});
-      chrome.storage.sync.get('activated', function(result){
-        if (result.activated) {
-            console.log('if executed')
-            $("body").on('click', (event) => {
-                tooltipResponse(event);
+        if (request.type === 'activation'){
+            //chrome.storage.sync.set({'activated': request.status});
+            chrome.storage.sync.get('activated', function(result){
+                if (result.activated) {
+                    console.log('if executed')
+                    $("body").on('click', (event) => {
+                        tooltipResponse(event);
+                    });
+                }
+                else {
+                    console.log('else executed');
+                    toolTipActive = false;
+                    $("body").off('click');
+                }
             });
         }
-        else {
-            console.log('else executed');
-            toolTipActive = false;
-            $("body").off('click');
-        }
-      });
+    // I think this set is redundant since I set "activated" in popup.js
+      
     }
   );
 
